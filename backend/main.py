@@ -1,7 +1,10 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-app = FastAPI()
+# Import the upload router
+from app.routes.upload import router as upload_router
+
+app = FastAPI(title="RAG Chatbot API")
 
 
 class ChatRequest(BaseModel):
@@ -18,3 +21,7 @@ def chat(request: ChatRequest):
     return {
         "response": f"You said: {request.message}"
     }
+
+
+# Register the upload route
+app.include_router(upload_router)
