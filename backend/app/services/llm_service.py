@@ -2,24 +2,40 @@ import os
 from dotenv import load_dotenv
 from google import genai
 
-# Load environment variables
 load_dotenv()
 
-# Read the API key
 API_KEY = os.getenv("GEMINI_API_KEY")
 
-# Create the Gemini client
 client = genai.Client(api_key=API_KEY)
 
 
-def generate_response(user_message: str) -> str:
+def ask_gemini(question: str, context: str) -> str:
     """
-    Sends the user's message to Gemini and returns the generated text.
+    Generate an answer using the retrieved document context.
     """
+
+    prompt = f"""
+You are an AI assistant.
+
+Answer ONLY using the context below.
+
+If the answer is not present in the context, reply:
+"I couldn't find the answer in the uploaded document."
+
+--------------------
+Context:
+{context}
+--------------------
+
+Question:
+{question}
+
+Answer:
+"""
 
     response = client.models.generate_content(
         model="gemini-2.5-flash",
-        contents=user_message,
+        contents=prompt,
     )
 
     return response.text
